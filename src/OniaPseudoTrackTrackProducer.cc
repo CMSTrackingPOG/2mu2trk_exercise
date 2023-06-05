@@ -76,14 +76,18 @@ void OniaPseudoTrackTrackProducer::produce(edm::Event& event, const edm::EventSe
        if (Tracks.isValid() && !Tracks->empty()) {
          for (std::vector<pat::PackedCandidate>::const_iterator pp = Tracks->begin(); pp!= Tracks->end(); ++pp) {
 
-           //if (!pp->trackHighPurity() || !pp->fromPV() || std::abs(pp->pdgId())!=321 || !pp->hasTrackDetails()) continue;
-
            if (!pp->trackHighPurity() || !pp->hasTrackDetails()) continue;
 
-           //std::cout<<" ######### I have kaons for you ######### "<<std::endl;
+           //if(!pp->fromPV()) continue; 
+           //Here we are asking if the embedded track comes from a PV
+    
+           //if(pp->vertexRef().key()!=THEKEY) continue;  
+           // here we can ask if the track comes from a specific PV 
+           // (where THEKEY is the index of the vertex we are interested in in the PV collection)
            
-           //if ( pp->vertexRef().key()!=THEKEY) continue; //This reinforce the fromPV request above
+           //std::cout<<" ######### I have kaons for you ######### "<<std::endl;
            const reco::Track* TheTrack = &pp->pseudoTrack();
+
            //if (TheTrack->pt()<0.5 || std::abs(TheTrack->eta())>2.5 || TheTrack->charge()==0 ) continue;
 
            if (TheTrack->charge()==0) continue;
@@ -113,7 +117,6 @@ void OniaPseudoTrackTrackProducer::produce(edm::Event& event, const edm::EventSe
             //if(Track1->charge() * Track2->charge() >= 0) continue; // Right sign
             //if(Track1->charge() * Track2->charge() <= 0) continue; // Wrong sign
 
-            //std::cout<<" charge = "<<Track1->charge() * Track2->charge()<<std::endl;
             float deltaR_track1 = std::sqrt(reco::deltaR2(*Track1,*TheOnia));
             float deltaR_track2 = std::sqrt(reco::deltaR2(*Track2,*TheOnia));
 
@@ -211,21 +214,14 @@ void OniaPseudoTrackTrackProducer::produce(edm::Event& event, const edm::EventSe
             double ctauErrPV = sqrt(ROOT::Math::Similarity(vpperp,vXYe)) * TheParticle->currentState().mass() / pperp.Perp2();
 
             TVector3 vtx3D(TheDecayVertex->position().x(),TheDecayVertex->position().y(),TheDecayVertex->position().z());
-            //std::cout<<" ######### TheDecayVertex 3D = "<<vtx3D.Mag()<<" ######### PVwithmuons 3D = "<<pvtx3D.Mag()<<" ######### "<<std::endl;
-            //double Pos = sqrt(TheDecayVertex->position().x()*TheDecayVertex->position().x() + TheDecayVertex->position().y()*TheDecayVertex->position().y() + TheDecayVertex->position().z()*TheDecayVertex->position().z());
-            //std::cout<<" ######### TheDecayVertex 3D manuel = "<<Pos<<" #########TheDecayVertex 3D = "<<vtx3D.Mag()<<" ######### "<<std::endl;
-            /*double pVx = TheDecayVertex->position().x() - thePrimaryV->position().x();
-            double pVy = TheDecayVertex->position().y() - thePrimaryV->position().y();
-            double pVz = TheDecayVertex->position().z() - thePrimaryV->position().z();
-
-            double pV3D = sqrt(pVx*pVx + pVy*pVy + pVz*pVz);*/
+            //std::cout<<" ######### TheDecayVertex 3D = "<<vtx3D.Mag()<<" ######### PV 3D = "<<pvtx3D.Mag()<<" ######### "<<std::endl;
 
             VertexDistance3D vdistXYZ;
             Measurement1D distXYZ = vdistXYZ.distance(reco::Vertex(*TheDecayVertex),* thePrimaryV);
 
             TVector3 pperp3D(TheParticle->currentState().kinematicParameters().momentum().x(), TheParticle->currentState().kinematicParameters().momentum().y(), TheParticle->currentState().kinematicParameters().momentum().z());
             TVector3 vdiff3D = vtx3D - pvtx3D;
-            //double dis = vtx3D.Mag()
+
             //std::cout<<" ######### Vertex distance 3V = "<<vdiff3D.Mag()<<" ######### Vertex distance 3D = "<<distXYZ.value()<<" ######### Vertex distance 3D manuel = "<<pV3D<<" ######### "<<std::endl;
             double cosAlpha3D = vdiff3D.Dot(pperp3D) / (vdiff3D.Mag() * pperp3D.Mag());
 
@@ -234,7 +230,6 @@ void OniaPseudoTrackTrackProducer::produce(edm::Event& event, const edm::EventSe
             vDiff3D[0] = vdiff3D.x(); vDiff3D[1] = vdiff3D.y(); vDiff3D[2] = vdiff3D.z(); // needed by Similarity method
             float lxyzErr = sqrt(ROOT::Math::Similarity(vDiff3D,vXYe)) / vdiff3D.Mag();
 
-            TheCandidate.addUserInt("vStatus",1);
             TheCandidate.addUserFloat("vProb",Prob);
             TheCandidate.addUserFloat("cosAlpha",cosAlpha);
             TheCandidate.addUserFloat("cosAlpha3D",cosAlpha3D);
