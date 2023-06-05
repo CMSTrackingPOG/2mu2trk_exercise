@@ -9,7 +9,7 @@ This package is mean to be run using Ultra Legacy MINIAODv2
 scram p -n cmssw CMSSW_13_1_0
 cd cmssw/src/
 cmsenv
-git clone git@github.com:AdrianoDee/2mu2trk_exercise.git -b jpsiphi MuMuTrkTrk/MuMuTrkTrk/
+git clone git@github.com:CMSTrackingPOG/2mu2trk_exercise.git -b jpsiphi MuMuTrkTrk/MuMuTrkTrk/
 scram b -j 8
 ```
 
@@ -129,10 +129,10 @@ process.onia2MuMuPAT.dimuonSelection=cms.string("2.5 < mass && mass < 3.5")
 
 The `bs_decay.ipynb` notebook under `MuMuTrkTrk/MuMuTrkTrk/test/`
 
-It's easier if you follow the instructions directly there. If you want you may run this notebook in [SWAN](https://swan.web.cern.ch/swan/) from which you will be able to acces any area you have acces on `eos` (e.g. your `lxplus` home, in my case `/afs/cern.ch/user/a/adiflori`).
+It's easier if you follow the instructions directly there. If you want you may run this notebook in [SWAN](https://swan.web.cern.ch/swan/) from which you will be able to acces any area you have acces on `eos` (e.g. your `lxplus` home).
 
 
- <a href="https://cern.ch/swanserver/cgi-bin/go?projurl=https://raw.githubusercontent.com/AdrianoDee/2mu2trk_exercise/main/test/bs_decay.ipynb" target="_blank">
+ <a href="https://cern.ch/swanserver/cgi-bin/go?projurl=https://raw.githubusercontent.com/CMSTrackingPOG/2mu2trk_exercise/main/test/bs_decay.ipynb" target="_blank">
                             <img src="https://swanserver.web.cern.ch/swanserver/images/badge_swan_white_150.png" alt="Open in SWAN" style="height:1.5em">
                         </a>
 
